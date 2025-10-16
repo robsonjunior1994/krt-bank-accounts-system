@@ -9,6 +9,8 @@ namespace KRT.BankAccounts.Api._01_Presentation.DTOs.Response
         public string Cpf { get; set; }
         public string Status { get; set; }
 
+        public AccountResponse() { }
+
         public AccountResponse(Account account)
         {
             Id = account.Id;

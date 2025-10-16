@@ -1,5 +1,9 @@
 ﻿# krt-bank-accounts-system
 
+<details>
+
+<summary>SQL Server</summary>
+
 ## 🏦 **Banco de Dados — Configuração (SQL Server via Docker)**
 
 ### 🧩 **Passo a passo**
@@ -92,3 +96,105 @@ sqlcmd -S localhost,1433 -U sa -P Root@12345 -d KRTBankAccounts
 Se aparecer o prompt `1>`, o banco está conectado corretamente
 
 ctrl + c para sair.
+
+</details>
+
+</details>
+<summary>REDIS para cache</summary>
+
+
+# 🧰 Cache (Redis) — Setup local com Docker
+
+## 1) Baixar a imagem do Redis
+
+```bash
+docker pull redis:7-alpine
+```
+
+> `alpine` é levinho e ótimo para desenvolvimento.
+
+---
+
+## 2) Subir o container do Redis
+
+### COM senha (recomendado)
+
+```bash
+docker run -d --name redis-cache -p 6379:6379  -e REDIS_PASSWORD=devpassword123 redis:7-alpine  redis-server --requirepass devpassword123
+```
+
+> **Dica:** quer persistência entre reinícios? Adicione `-v redisdata:/data` ao comando.
+
+---
+
+## 3) Testar o Redis (opcional)
+
+### Com senha:
+
+```bash
+docker exec -it redis-cache redis-cli -a devpassword123 ping
+# PONG
+```
+
+---
+
+## 5) Subir a API
+
+```bash
+dotnet restore
+dotnet build
+dotnet run
+```
+
+Endpoint de saúde rápido (exemplo):
+`GET http://localhost:5000/api/account` (ajuste conforme sua porta)
+
+---
+
+## 6) (Opcional) Docker Compose
+
+Se preferir **subir tudo com um arquivo**:
+
+```yaml
+# docker-compose.yml
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis-cache
+    command: ["redis-server", "--requirepass", "devpassword123"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    restart: unless-stopped
+
+volumes:
+  redisdata:
+```
+
+Subir:
+
+```bash
+docker compose up -d
+```
+
+Use em `appsettings.json`:
+
+```json
+"RedisConnection": "localhost:6379,password=devpassword123"
+```
+
+---
+
+## 7) Troubleshooting rápido
+
+* **`ECONNREFUSED`**: verifique se a porta `6379` está livre e o container está rodando: `docker ps`.
+* **`NOAUTH Authentication required`**: você subiu o Redis **com senha**; adicione `password=...` no connection string.
+* **TimeOut**: adicione `abortConnect=false` no connection string para evitar abortar na primeira tentativa:
+
+  ```json
+  "RedisConnection": "localhost:6379,password=devpassword123,abortConnect=false"
+  ```
+
+---
+

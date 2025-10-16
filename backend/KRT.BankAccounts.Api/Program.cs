@@ -1,8 +1,10 @@
 using KRT.BankAccounts.Api._02_Application.DependencyInjection;
+using KRT.BankAccounts.Api._04_Infrastructure.Cache;
 using KRT.BankAccounts.Api._04_Infrastructure.Data;
 using KRT.BankAccounts.Api._04_Infrastructure.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,11 +18,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
 
-//  Configurar cache/mensageria no futuro
-// builder.Services.AddStackExchangeRedisCache(...);
+// Lê configurações de TTL do cache do appsettings.json
+builder.Services.Configure<CacheSettings>(
+    builder.Configuration.GetSection("CacheSettings")
+);
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var configuration = builder.Configuration.GetConnectionString("RedisConnection");
+    return ConnectionMultiplexer.Connect(configuration!);
+});
+
+//  Configurar mensageria no futuro
 // builder.Services.Configure<RabbitMqSettings>(builder.Configuration.GetSection("RabbitMQ"));
 
 // Configura para não retornar automaticamente 400 Bad Request em caso de ModelState inválido
@@ -29,6 +39,9 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
 });
+
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 

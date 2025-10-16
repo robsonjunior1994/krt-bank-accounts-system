@@ -5,8 +5,9 @@ using KRT.BankAccounts.Api._02_Application.Interfaces.Infra;
 using KRT.BankAccounts.Api._02_Application.Interfaces.Services;
 using KRT.BankAccounts.Api._02_Application.Shared;
 using KRT.BankAccounts.Api._03_Domain.Entities;
-using KRT.BankAccounts.Api._03_Domain.Enums;
 using KRT.BankAccounts.Api._03_Domain.Interfaces;
+using KRT.BankAccounts.Api._04_Infrastructure.Cache;
+using Microsoft.Extensions.Options;
 
 namespace KRT.BankAccounts.Api._02_Application.Services
 {
@@ -15,12 +16,14 @@ namespace KRT.BankAccounts.Api._02_Application.Services
         private readonly IAccountRepository _repository;
         private readonly IMessagePublisher _publisher;
         private readonly ICacheService _cache;
+        private readonly CacheSettings _settings;
 
-        public AccountService(IAccountRepository repository, IMessagePublisher publisher, ICacheService cache)
+        public AccountService(IAccountRepository repository, IMessagePublisher publisher, ICacheService cache, IOptions<CacheSettings> options)
         {
             _repository = repository;
             _publisher = publisher;
             _cache = cache;
+            _settings = options.Value;
         }
 
         public async Task<Result<AccountResponse>> CreateAsync(CreateAccountRequest request)
@@ -43,7 +46,7 @@ namespace KRT.BankAccounts.Api._02_Application.Services
 
                 await _repository.AddAsync(account);
 
-                // Publica evento (para outras áreas, ex: cartões, fraude, etc)
+                //Publica evento(para outras áreas, ex: cartões, fraude, etc)
                 //await _publisher.PublishAsync("account.created", new
                 //{
                 //    account.Id,
@@ -52,8 +55,8 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 //    account.Status
                 //});
 
-                // Limpa cache (opcional, se usar caching de contas)
-                //await _cache.RemoveAsync($"account_{account.Id}");
+                // Limpa cache 
+                await _cache.RemoveAsync($"account_{account.Id}");
 
                 var response = new AccountResponse(account);
                 return Result<AccountResponse>.Success(response);
@@ -87,7 +90,7 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 //});
 
                 // Limpeza de cache (caso exista)
-                //await _cache.RemoveAsync($"account_{account.Id}");
+                await _cache.RemoveAsync($"account_{account.Id}");
 
                 return Result.Success();
             }
@@ -100,33 +103,27 @@ namespace KRT.BankAccounts.Api._02_Application.Services
             }
         }
 
-
-
         public async Task<Result<PagedResult<AccountResponse>>> GetAllAsync(int pageNumber, int pageSize)
         {
             try
             {
-                // Tenta buscar no cache primeiro
-                //var cacheKey = "accounts_all";
-                //var cachedAccounts = await _cache.GetAsync<IEnumerable<AccountResponse>>(cacheKey);
-
-                //if (cachedAccounts != null && cachedAccounts.Any())
-                //    return Result<IEnumerable<AccountResponse>>.Success(cachedAccounts);
-                var totalCount = await _repository.CountAsync();
-                if (totalCount == 0)
+                var totalRecords = await _repository.CountAsync();
+                if (totalRecords == 0)
                     return Result<PagedResult<AccountResponse>>.Failure(
                         "Nenhuma conta encontrada.",
                         ErrorCode.NOT_FOUND
                     );
 
                 var accounts = await _repository.GetPagedAsync(pageNumber, pageSize);
-
                 var responseList = accounts.Select(a => new AccountResponse(a)).ToList();
 
-                // Armazena no cache (para evitar custo de consulta)
-                //await _cache.SetAsync(cacheKey, responseList, TimeSpan.FromHours(1));
 
-                var pagedResult = new PagedResult<AccountResponse>(responseList, totalCount, pageNumber, pageSize);
+                var pagedResult = new PagedResult<AccountResponse>(
+                    responseList,
+                    totalRecords,
+                    pageNumber,
+                    pageSize
+                );
 
                 return Result<PagedResult<AccountResponse>>.Success(pagedResult);
             }
@@ -145,11 +142,11 @@ namespace KRT.BankAccounts.Api._02_Application.Services
             try
             {
                 // Tenta buscar do cache primeiro
-                //var cacheKey = $"account_{id}";
-                //var cachedAccount = await _cache.GetAsync<AccountResponse>(cacheKey);
+                var cacheKey = $"account_{id}";
+                var cachedAccount = await _cache.GetAsync<AccountResponse>(cacheKey);
 
-                //if (cachedAccount != null)
-                //    return Result<AccountResponse>.Success(cachedAccount);
+                if (cachedAccount != null)
+                    return Result<AccountResponse>.Success(cachedAccount);
 
                 var account = await _repository.GetByIdAsync(id);
                 if (account == null)
@@ -161,8 +158,8 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 var response = new AccountResponse(account);
 
                 // Armazena no cache (para consultas futuras)
-                //await _cache.SetAsync(cacheKey, response, TimeSpan.FromHours(1));
-
+                await _cache.SetAsync(cacheKey, response,TimeSpan.FromMinutes(_settings.AccountDetailsExpirationMinutes));
+                
                 return Result<AccountResponse>.Success(response);
             }
             catch (Exception)
@@ -173,7 +170,6 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 );
             }
         }
-
 
         public async Task<Result<AccountResponse>> UpdateStatusAsync(int id, bool ativar)
         {
@@ -208,8 +204,8 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 //});
 
                 // Limpa cache
-                //await _cache.RemoveAsync($"account_{account.Id}");
-                //await _cache.RemoveAsync("accounts_all");
+                await _cache.RemoveAsync($"account_{account.Id}");
+                await _cache.RemoveAsync("accounts_all");
 
                 var response = new AccountResponse(account);
                 return Result<AccountResponse>.Success(response);
