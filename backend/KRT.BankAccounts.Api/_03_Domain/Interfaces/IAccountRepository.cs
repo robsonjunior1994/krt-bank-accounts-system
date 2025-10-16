@@ -10,5 +10,7 @@ namespace KRT.BankAccounts.Api._03_Domain.Interfaces
         Task UpdateAsync(Account account);
         Task DeleteAsync(Account account);
         Task<bool> ExistsByCpfAsync(string cpf);
+        Task<IEnumerable<Account>> GetPagedAsync(int pageNumber, int pageSize);
+        Task<int> CountAsync();
     }
 }

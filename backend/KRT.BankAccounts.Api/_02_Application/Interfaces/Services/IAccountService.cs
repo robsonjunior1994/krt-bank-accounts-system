@@ -8,7 +8,7 @@ namespace KRT.BankAccounts.Api._02_Application.Interfaces.Services
     {
         Task<Result<AccountResponse>> CreateAsync(CreateAccountRequest request);
         Task<Result<AccountResponse>> GetByIdAsync(int id);
-        Task<Result<IEnumerable<AccountResponse>>> GetAllAsync();
+        Task<Result<PagedResult<AccountResponse>>> GetAllAsync(int pageNumber, int pageSize);
         Task<Result> DeleteAsync(int id);
         Task<Result<AccountResponse>> UpdateStatusAsync(int id, bool ativar);
 

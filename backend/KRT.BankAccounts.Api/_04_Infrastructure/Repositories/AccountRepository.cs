@@ -40,5 +40,19 @@ namespace KRT.BankAccounts.Api._04_Infrastructure.Repositories
 
         public async Task<bool> ExistsByCpfAsync(string cpf) =>
             await _context.Accounts.AnyAsync(x => x.Cpf == cpf);
+        public async Task<IEnumerable<Account>> GetPagedAsync(int pageNumber, int pageSize)
+        {
+            return await _context.Accounts
+                .OrderBy(a => a.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountAsync()
+        {
+            return await _context.Accounts.CountAsync();
+        }
+
     }
 }

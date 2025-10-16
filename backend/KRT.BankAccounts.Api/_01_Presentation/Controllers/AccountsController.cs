@@ -23,16 +23,17 @@ namespace KRT.BankAccounts.Api._01_Presentation.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var messages = ModelState.Values
+                var errors = ModelState.Values
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage)
                     .ToList();
 
-                var validationResult = Result<List<string>>.Failure(
+                var response = ResponseDto.Failure(
                     "Erro de validação nos dados enviados.",
-                    ErrorCode.VALIDATION_ERROR);
+                    StatusCodes.Status400BadRequest.ToString(),
+                    errors);
 
-                return HandleResult(validationResult, "Erro de validação nos dados enviados.", StatusCodes.Status400BadRequest);
+                return StatusCode(StatusCodes.Status400BadRequest, response);
             }
 
             var result = await _accountService.CreateAsync(request);
@@ -40,7 +41,6 @@ namespace KRT.BankAccounts.Api._01_Presentation.Controllers
             if (!result.IsSuccess)
             {
                 int statusCode = ErrorMapper.MapErrorToStatusCode(result.ErrorCode);
-
                 var response = ResponseDto.Failure(
                     result.ErrorMessage,
                     statusCode.ToString(),
@@ -72,9 +72,9 @@ namespace KRT.BankAccounts.Api._01_Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var result = await _accountService.GetAllAsync();
+            var result = await _accountService.GetAllAsync(pageNumber, pageSize);
 
             if (!result.IsSuccess)
             {
@@ -90,10 +90,11 @@ namespace KRT.BankAccounts.Api._01_Presentation.Controllers
             return HandleResult(result, "Contas listadas com sucesso.", StatusCodes.Status200OK);
         }
 
+
         [HttpPut("{id:int}/status")]
-        public async Task<IActionResult> UpdateStatus(int id, [FromQuery] bool status)
+        public async Task<IActionResult> UpdateStatus(int id, [FromQuery] bool ativar)
         {
-            var result = await _accountService.UpdateStatusAsync(id, status);
+            var result = await _accountService.UpdateStatusAsync(id, ativar);
 
             if (!result.IsSuccess)
             {

@@ -102,7 +102,7 @@ namespace KRT.BankAccounts.Api._02_Application.Services
 
 
 
-        public async Task<Result<IEnumerable<AccountResponse>>> GetAllAsync()
+        public async Task<Result<PagedResult<AccountResponse>>> GetAllAsync(int pageNumber, int pageSize)
         {
             try
             {
@@ -112,25 +112,27 @@ namespace KRT.BankAccounts.Api._02_Application.Services
 
                 //if (cachedAccounts != null && cachedAccounts.Any())
                 //    return Result<IEnumerable<AccountResponse>>.Success(cachedAccounts);
-
-                var accounts = await _repository.GetAllAsync();
-
-                if (accounts == null || !accounts.Any())
-                    return Result<IEnumerable<AccountResponse>>.Failure(
+                var totalCount = await _repository.CountAsync();
+                if (totalCount == 0)
+                    return Result<PagedResult<AccountResponse>>.Failure(
                         "Nenhuma conta encontrada.",
                         ErrorCode.NOT_FOUND
                     );
+
+                var accounts = await _repository.GetPagedAsync(pageNumber, pageSize);
 
                 var responseList = accounts.Select(a => new AccountResponse(a)).ToList();
 
                 // Armazena no cache (para evitar custo de consulta)
                 //await _cache.SetAsync(cacheKey, responseList, TimeSpan.FromHours(1));
 
-                return Result<IEnumerable<AccountResponse>>.Success(responseList);
+                var pagedResult = new PagedResult<AccountResponse>(responseList, totalCount, pageNumber, pageSize);
+
+                return Result<PagedResult<AccountResponse>>.Success(pagedResult);
             }
             catch (Exception)
             {
-                return Result<IEnumerable<AccountResponse>>.Failure(
+                return Result<PagedResult<AccountResponse>>.Failure(
                     "Ocorreu um erro ao buscar as contas.",
                     ErrorCode.DATABASE_ERROR
                 );
