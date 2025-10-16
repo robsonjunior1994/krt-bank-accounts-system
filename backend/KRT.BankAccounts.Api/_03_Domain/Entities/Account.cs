@@ -8,6 +8,8 @@ namespace KRT.BankAccounts.Api._03_Domain.Entities
         public string Name { get; private set; }
         public string Cpf { get; private set; }
         public AccountStatus Status { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime UpdatedAt { get; private set; } 
 
         protected Account() { }
 
@@ -16,6 +18,7 @@ namespace KRT.BankAccounts.Api._03_Domain.Entities
             Name = nomeTitular;
             Cpf = cpf;
             Status = AccountStatus.Active;
+            CreatedAt = DateTime.UtcNow;
         }
 
         public void Activate()
@@ -24,6 +27,7 @@ namespace KRT.BankAccounts.Api._03_Domain.Entities
                 throw new InvalidOperationException("A conta já está ativa.");
 
             Status = AccountStatus.Active;
+            Update();
         }
 
         public void Deactivate()
@@ -32,6 +36,12 @@ namespace KRT.BankAccounts.Api._03_Domain.Entities
                 throw new InvalidOperationException("A conta já está inativa.");
 
             Status = AccountStatus.Inactive;
+            Update();
+        }
+
+        public void Update()
+        {
+             UpdatedAt = DateTime.UtcNow;
         }
     }
 }

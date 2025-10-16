@@ -52,7 +52,9 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                     account.Id,
                     account.Name,
                     account.Cpf,
-                    account.Status
+                    account.Status,
+                    account.CreatedAt,
+                    account.UpdatedAt
                 });
 
                 // Limpa cache 
@@ -86,7 +88,9 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                     account.Id,
                     account.Name,
                     account.Cpf,
-                    Status = "Deletada"
+                    Status = "Deletada",
+                    account.CreatedAt,
+                    account.UpdatedAt
                 });
 
                 // Limpeza de cache (caso exista)
@@ -135,7 +139,6 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 );
             }
         }
-
 
         public async Task<Result<AccountResponse>> GetByIdAsync(int id)
         {
@@ -200,7 +203,9 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                     account.Id,
                     account.Name,
                     account.Cpf,
-                    Status = account.Status.ToString()
+                    Status = account.Status.ToString(),
+                    account.CreatedAt,
+                    account.UpdatedAt
                 });
 
                 // Limpa cache
