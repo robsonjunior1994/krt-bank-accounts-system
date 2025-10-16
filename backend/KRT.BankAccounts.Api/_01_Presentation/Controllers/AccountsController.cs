@@ -23,15 +23,17 @@ namespace KRT.BankAccounts.Api._01_Presentation.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
+                var errors = string.Join(" | ",
+                    ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                );
 
                 var response = ResponseDto.Failure(
                     "Erro de validação nos dados enviados.",
                     StatusCodes.Status400BadRequest.ToString(),
-                    errors);
+                    errors
+                );
 
                 return StatusCode(StatusCodes.Status400BadRequest, response);
             }

@@ -1,6 +1,7 @@
 using KRT.BankAccounts.Api._02_Application.DependencyInjection;
 using KRT.BankAccounts.Api._04_Infrastructure.Data;
 using KRT.BankAccounts.Api._04_Infrastructure.DependencyInjection;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,13 @@ builder.Services.AddInfrastructure();
 //  Configurar cache/mensageria no futuro
 // builder.Services.AddStackExchangeRedisCache(...);
 // builder.Services.Configure<RabbitMqSettings>(builder.Configuration.GetSection("RabbitMQ"));
+
+// Configura para não retornar automaticamente 400 Bad Request em caso de ModelState inválido
+// Isso permite customizar a resposta de erro e ele cai no IF do controller
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 var app = builder.Build();
 
