@@ -198,3 +198,81 @@ Use em `appsettings.json`:
 
 ---
 
+<details>
+<summary> RabbitMQ </summary
+
+Perfeito, Robson 🔥 — hora de configurar a **mensageria** pra completar o desafio com chave de ouro!
+Você já preparou tudo certinho pra isso: arquitetura em camadas, injeção de dependência, e até um publisher mockado.
+Agora vamos fazer o RabbitMQ rodar **de verdade**, mas mantendo o projeto limpo e desacoplado.
+
+---
+
+## 🧩 1️⃣ Criar container RabbitMQ (com painel de controle)
+
+No seu passo a passo do projeto (tipo o que você fez pro SQL e Redis), adiciona esta parte 👇
+
+```bash
+# 🐇 Baixar a imagem do RabbitMQ com o painel de administração
+docker pull rabbitmq:3-management
+
+# 🚀 Rodar o container com painel web habilitado
+docker run -d --name rabbitmq  -p 5672:5672  -p 15672:15672  -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest rabbitmq:3-management
+```
+
+📍 **Acesso ao painel web:**
+👉 [http://localhost:15672](http://localhost:15672)
+Usuário: `guest`
+Senha: `guest`
+
+---
+
+## 🧩 7️⃣ Publicar eventos na aplicação
+
+Agora em qualquer serviço (ex: `AccountService`), você pode publicar eventos como:
+
+```csharp
+await _publisher.PublishAsync("account.created", new
+{
+    account.Id,
+    account.Name,
+    account.Cpf,
+    Status = account.Status.ToString()
+});
+```
+
+ou
+
+```csharp
+await _publisher.PublishAsync("account.deleted", new { account.Id });
+```
+
+---
+
+## 🧩 8️⃣ Verificar publicação
+
+Acesse o painel RabbitMQ:
+🔗 [http://localhost:15672](http://localhost:15672)
+→ Vá em **Exchanges → krt.bank.exchange**
+→ Clique em **Queues → krt.account.events**
+→ Clique em **Get messages**
+
+Você verá a mensagem JSON chegando!
+
+---
+
+## ✅ Resultado final
+
+🎯 Agora sua API:
+
+* Cria conta → grava no banco
+* Publica evento no RabbitMQ
+* Armazena no Redis
+* Usa DDD + Result + ResponseDto
+* E está **100% pronta pra ambiente real**
+
+---
+
+Quer que eu te monte também um **consumer simples** (por exemplo, `FraudService` ou `CardService`) pra mostrar como outra aplicação do banco poderia consumir os eventos publicados?
+Seria ótimo pra colocar no README e mostrar o ciclo completo da mensageria.
+
+</details>

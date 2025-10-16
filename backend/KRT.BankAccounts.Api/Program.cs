@@ -1,7 +1,9 @@
 using KRT.BankAccounts.Api._02_Application.DependencyInjection;
+using KRT.BankAccounts.Api._02_Application.Interfaces.Infra;
 using KRT.BankAccounts.Api._04_Infrastructure.Cache;
 using KRT.BankAccounts.Api._04_Infrastructure.Data;
 using KRT.BankAccounts.Api._04_Infrastructure.DependencyInjection;
+using KRT.BankAccounts.Api._04_Infrastructure.Messaging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -39,6 +41,9 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
 });
+
+builder.Services.Configure<RabbitMqSettings>(builder.Configuration.GetSection("RabbitMQ"));
+builder.Services.AddSingleton<IMessagePublisher, RabbitMqMessagePublisher>();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();

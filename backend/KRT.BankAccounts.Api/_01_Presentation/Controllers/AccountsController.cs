@@ -94,9 +94,9 @@ namespace KRT.BankAccounts.Api._01_Presentation.Controllers
 
 
         [HttpPut("{id:int}/status")]
-        public async Task<IActionResult> UpdateStatus(int id, [FromQuery] bool ativar)
+        public async Task<IActionResult> UpdateStatus(int id, [FromQuery] bool activate)
         {
-            var result = await _accountService.UpdateStatusAsync(id, ativar);
+            var result = await _accountService.UpdateStatusAsync(id, activate);
 
             if (!result.IsSuccess)
             {

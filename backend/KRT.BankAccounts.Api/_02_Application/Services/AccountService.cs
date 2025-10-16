@@ -47,13 +47,13 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 await _repository.AddAsync(account);
 
                 //Publica evento(para outras áreas, ex: cartões, fraude, etc)
-                //await _publisher.PublishAsync("account.created", new
-                //{
-                //    account.Id,
-                //    account.Name,
-                //    account.Cpf,
-                //    account.Status
-                //});
+                await _publisher.PublishAsync("account.created", new
+                {
+                    account.Id,
+                    account.Name,
+                    account.Cpf,
+                    account.Status
+                });
 
                 // Limpa cache 
                 await _cache.RemoveAsync($"account_{account.Id}");
@@ -81,13 +81,13 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 await _repository.DeleteAsync(account);
 
                 // Publicação de evento (RabbitMQ)
-                //await _publisher.PublishAsync("account.deleted", new
-                //{
-                //    account.Id,
-                //    account.Name,
-                //    account.Cpf,
-                //    Status = "Deletada"
-                //});
+                await _publisher.PublishAsync("account.deleted", new
+                {
+                    account.Id,
+                    account.Name,
+                    account.Cpf,
+                    Status = "Deletada"
+                });
 
                 // Limpeza de cache (caso exista)
                 await _cache.RemoveAsync($"account_{account.Id}");
@@ -194,14 +194,14 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 await _repository.UpdateAsync(account);
 
                 //// Publica evento conforme a ação
-                //var eventName = ativar ? "account.activated" : "account.deactivated";
-                //await _publisher.PublishAsync(eventName, new
-                //{
-                //    account.Id,
-                //    account.Name,
-                //    account.Cpf,
-                //    Status = account.Status.ToString()
-                //});
+                var eventName = ativar ? "account.activate" : "account.disable";
+                await _publisher.PublishAsync(eventName, new
+                {
+                    account.Id,
+                    account.Name,
+                    account.Cpf,
+                    Status = account.Status.ToString()
+                });
 
                 // Limpa cache
                 await _cache.RemoveAsync($"account_{account.Id}");
