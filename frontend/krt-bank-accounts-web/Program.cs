@@ -1,11 +1,12 @@
 using krt_bank_accounts_web.Services;
+using krt_bank_accounts_web.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddHttpClient<AccountApiService>();
+builder.Services.AddHttpClient<IAccountApiService, AccountApiService>();
 
 var app = builder.Build();
 

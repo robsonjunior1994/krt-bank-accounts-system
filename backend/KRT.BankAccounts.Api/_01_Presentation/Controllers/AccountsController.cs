@@ -31,9 +31,9 @@ namespace KRT.BankAccounts.Api._01_Presentation.Controllers
                 );
 
                 var response = ResponseDto.Failure(
-                    "Erro de validação nos dados enviados.",
+                    errors,
                     StatusCodes.Status400BadRequest.ToString(),
-                    errors
+                    "Erro de validação nos dados enviados."
                 );
 
                 return StatusCode(StatusCodes.Status400BadRequest, response);
@@ -132,6 +132,31 @@ namespace KRT.BankAccounts.Api._01_Presentation.Controllers
             return HandleResult(result, "Conta excluída com sucesso.", StatusCodes.Status200OK);
         }
 
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateAccountRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                var result = Result<AccountResponse>.Failure(errors, ErrorCode.VALIDATION_ERROR);
+                return HandleResult(result, "Erro de validação nos dados enviados.", StatusCodes.Status400BadRequest);
+            }
+
+            var resultUpdate = await _accountService.UpdateAsync(id, request);
+
+            if (!resultUpdate.IsSuccess)
+            {
+                int statusCode = ErrorMapper.MapErrorToStatusCode(resultUpdate.ErrorCode);
+                var response = ResponseDto.Failure(resultUpdate.ErrorMessage, statusCode.ToString(), resultUpdate.ErrorMessage);
+                return StatusCode(statusCode, response);
+            }
+
+            return HandleResult(resultUpdate, "Conta atualizada com sucesso.", StatusCodes.Status200OK);
+        }
+
         private IActionResult HandleResult<T>(Result<T> result, string successMessage, int successStatusCode)
         {
             if (result.IsSuccess)
@@ -167,30 +192,6 @@ namespace KRT.BankAccounts.Api._01_Presentation.Controllers
             return StatusCode(statusCode, response);
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateAccountRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                var errors = string.Join(" | ", ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-
-                var result = Result<AccountResponse>.Failure(errors, ErrorCode.VALIDATION_ERROR);
-                return HandleResult(result, "Erro de validação nos dados enviados.", StatusCodes.Status400BadRequest);
-            }
-
-            var resultUpdate = await _accountService.UpdateAsync(id, request);
-
-            if (!resultUpdate.IsSuccess)
-            {
-                int statusCode = ErrorMapper.MapErrorToStatusCode(resultUpdate.ErrorCode);
-                var response = ResponseDto.Failure(resultUpdate.ErrorMessage, statusCode.ToString(), resultUpdate.ErrorMessage);
-                return StatusCode(statusCode, response);
-            }
-
-            return HandleResult(resultUpdate, "Conta atualizada com sucesso.", StatusCodes.Status200OK);
-        }
 
     }
 }

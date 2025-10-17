@@ -1,14 +1,15 @@
 ﻿using krt_bank_accounts_web.Models;
 using krt_bank_accounts_web.Services;
+using krt_bank_accounts_web.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace krt_bank_accounts_web.Controllers
 {
     public class AccountsController : Controller
     {
-        private readonly AccountApiService _service;
+        private readonly IAccountApiService _service;
 
-        public AccountsController(AccountApiService service)
+        public AccountsController(IAccountApiService service)
         {
             _service = service;
         }
@@ -18,7 +19,11 @@ namespace krt_bank_accounts_web.Controllers
             var pagedData = await _service.GetAllAsync(pageNumber, pageSize);
 
             if (pagedData == null)
+            {
+                TempData["ErrorMessage"] = "Não foi possível conectar à API. Tente novamente mais tarde.";
                 return View(new PagedResponse<AccountViewModel>());
+            }
+
 
             return View(pagedData);
         }
@@ -30,16 +35,23 @@ namespace krt_bank_accounts_web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AccountViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            await _service.CreateAsync(model);
+            var result = await _service.CreateAsync(model);
+
+            if (result == null || !result.IsSuccess)
+            {
+                TempData["ErrorMessage"] = result?.Message ?? "Falha ao conectar à API.";
+                return View(model);
+            }
+
             TempData["SuccessMessage"] = "Conta criada com sucesso!";
             return RedirectToAction(nameof(Index));
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -53,7 +65,6 @@ namespace krt_bank_accounts_web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, AccountViewModel model)
         {
             if (!ModelState.IsValid)
@@ -76,7 +87,6 @@ namespace krt_bank_accounts_web.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id, AccountViewModel model)
         {
             await _service.DeleteAsync(id, model);
