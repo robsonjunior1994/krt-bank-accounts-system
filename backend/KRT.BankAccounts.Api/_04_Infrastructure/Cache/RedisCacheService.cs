@@ -1,6 +1,4 @@
-﻿
-
-using KRT.BankAccounts.Api._02_Application.Interfaces.Infra;
+﻿using KRT.BankAccounts.Api._02_Application.Interfaces.Infra;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System.Text.Json;

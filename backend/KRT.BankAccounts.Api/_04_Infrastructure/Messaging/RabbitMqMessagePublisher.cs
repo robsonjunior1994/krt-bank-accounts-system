@@ -1,8 +1,5 @@
-﻿
-using System;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using KRT.BankAccounts.Api._02_Application.Interfaces.Infra;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
