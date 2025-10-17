@@ -41,7 +41,21 @@ namespace KRT.BankAccounts.Api._03_Domain.Entities
 
         public void Update()
         {
-             UpdatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Update(string name = null, string cpf = null)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new InvalidOperationException("O nome não pode ser vazio.");
+
+            if (string.IsNullOrWhiteSpace(cpf) || cpf.Length != 11)
+                throw new InvalidOperationException("O CPF deve conter 11 dígitos.");
+
+            Name = name;
+            Cpf = cpf;
+
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

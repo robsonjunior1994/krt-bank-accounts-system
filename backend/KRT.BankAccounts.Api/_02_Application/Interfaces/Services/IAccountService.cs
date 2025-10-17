@@ -11,6 +11,7 @@ namespace KRT.BankAccounts.Api._02_Application.Interfaces.Services
         Task<Result<PagedResult<AccountResponse>>> GetAllAsync(int pageNumber, int pageSize);
         Task<Result> DeleteAsync(int id);
         Task<Result<AccountResponse>> UpdateStatusAsync(int id, bool ativar);
+        Task<Result<AccountResponse>> UpdateAsync(int id, UpdateAccountRequest request);
 
     }
 }

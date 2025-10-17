@@ -156,8 +156,7 @@ namespace KRT.BankAccounts.Api._02_Application.Services
 
                 var response = new AccountResponse(account);
 
-                // Armazena no cache (para consultas futuras)
-                await _cache.SetAsync(cacheKey, response,TimeSpan.FromMinutes(_settings.AccountDetailsExpirationMinutes));
+                await _cache.SetAsync(cacheKey, response,TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes));
                 
                 return Result<AccountResponse>.Success(response);
             }
@@ -204,9 +203,7 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                     account.UpdatedAt
                 });
 
-                // Limpa cache
                 await _cache.RemoveAsync($"account_{account.Id}");
-                await _cache.RemoveAsync("accounts_all");
 
                 var response = new AccountResponse(account);
                 return Result<AccountResponse>.Success(response);
@@ -219,5 +216,46 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 );
             }
         }
+
+        public async Task<Result<AccountResponse>> UpdateAsync(int id, UpdateAccountRequest request)
+        {
+            try
+            {
+                var account = await _repository.GetByIdAsync(id);
+                if (account == null)
+                    return Result<AccountResponse>.Failure("Conta não encontrada.", ErrorCode.NOT_FOUND);
+
+                var exists = await _repository.ExistsByCpfAsync(request.Cpf);
+                if (exists && !string.Equals(account.Cpf, request.Cpf, StringComparison.OrdinalIgnoreCase))
+                    return Result<AccountResponse>.Failure("CPF já está em uso por outra conta.", ErrorCode.RESOURCE_ALREADY_EXISTS);
+
+                account.Update(request.Name, request.Cpf);
+
+                await _repository.UpdateAsync(account);
+
+                await _cache.RemoveAsync($"account_{account.Id}");
+
+                await _publisher.PublishAsync("account.updated", new
+                {
+                    account.Id,
+                    account.Name,
+                    account.Cpf,
+                    Status = account.Status.ToString(),
+                    account.CreatedAt,
+                    account.UpdatedAt
+                });
+
+                var response = new AccountResponse(account);
+                return Result<AccountResponse>.Success(response);
+            }
+            catch (Exception)
+            {
+                return Result<AccountResponse>.Failure(
+                    "Ocorreu um erro ao atualizar a conta.",
+                    ErrorCode.DATABASE_ERROR
+                );
+            }
+        }
+
     }
 }

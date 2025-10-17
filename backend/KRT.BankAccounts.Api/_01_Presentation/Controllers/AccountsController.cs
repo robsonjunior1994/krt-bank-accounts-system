@@ -1,5 +1,6 @@
 ﻿using KRT.BankAccounts.Api._01_Presentation.Dtos.Response;
 using KRT.BankAccounts.Api._01_Presentation.DTOs.Request;
+using KRT.BankAccounts.Api._01_Presentation.DTOs.Response;
 using KRT.BankAccounts.Api._01_Presentation.Helpers;
 using KRT.BankAccounts.Api._02_Application.Interfaces.Services;
 using KRT.BankAccounts.Api._02_Application.Shared;
@@ -165,5 +166,31 @@ namespace KRT.BankAccounts.Api._01_Presentation.Controllers
 
             return StatusCode(statusCode, response);
         }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateAccountRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                var result = Result<AccountResponse>.Failure(errors, ErrorCode.VALIDATION_ERROR);
+                return HandleResult(result, "Erro de validação nos dados enviados.", StatusCodes.Status400BadRequest);
+            }
+
+            var resultUpdate = await _accountService.UpdateAsync(id, request);
+
+            if (!resultUpdate.IsSuccess)
+            {
+                int statusCode = ErrorMapper.MapErrorToStatusCode(resultUpdate.ErrorCode);
+                var response = ResponseDto.Failure(resultUpdate.ErrorMessage, statusCode.ToString(), resultUpdate.ErrorMessage);
+                return StatusCode(statusCode, response);
+            }
+
+            return HandleResult(resultUpdate, "Conta atualizada com sucesso.", StatusCodes.Status200OK);
+        }
+
     }
 }
