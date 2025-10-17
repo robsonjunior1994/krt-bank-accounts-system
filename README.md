@@ -99,7 +99,7 @@ ctrl + c para sair.
 
 </details>
 
-</details>
+<details>
 <summary>REDIS para cache</summary>
 
 
@@ -197,6 +197,7 @@ Use em `appsettings.json`:
   ```
 
 ---
+</details>
 
 <details>
 <summary> RabbitMQ </summary
@@ -259,20 +260,5 @@ Acesse o painel RabbitMQ:
 Você verá a mensagem JSON chegando!
 
 ---
-
-## ✅ Resultado final
-
-🎯 Agora sua API:
-
-* Cria conta → grava no banco
-* Publica evento no RabbitMQ
-* Armazena no Redis
-* Usa DDD + Result + ResponseDto
-* E está **100% pronta pra ambiente real**
-
----
-
-Quer que eu te monte também um **consumer simples** (por exemplo, `FraudService` ou `CardService`) pra mostrar como outra aplicação do banco poderia consumir os eventos publicados?
-Seria ótimo pra colocar no README e mostrar o ciclo completo da mensageria.
 
 </details>
