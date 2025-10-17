@@ -1,5 +1,8 @@
 ﻿# krt-bank-accounts-system
 
+<img width="1246" height="897" alt="image" src="https://github.com/user-attachments/assets/dcbaf102-d01b-4d85-94ff-c2249a0f397e" />
+
+
 <details>
 
 <summary>SQL Server</summary>
