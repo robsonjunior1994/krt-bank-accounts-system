@@ -1,0 +1,53 @@
+﻿@model krt_bank_accounts_web.Models.AccountViewModel
+
+@{
+    ViewData["Title"] = "Editar Conta";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cpf" class="form-label"></label>
+        <input asp-for="Cpf" class="form-control" maxlength="11" />
+        <span asp-validation-for="Cpf" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label"></label>
+        <input asp-for="Status" class="form-control" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CreatedAt" class="form-label"></label>
+        <input asp-for="CreatedAt" class="form-control" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="UpdatedAt" class="form-label"></label>
+        <input asp-for="UpdatedAt" class="form-control" readonly />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Voltar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
