@@ -46,7 +46,6 @@ namespace KRT.BankAccounts.Api._02_Application.Services
 
                 await _repository.AddAsync(account);
 
-                //Publica evento(para outras áreas, ex: cartões, fraude, etc)
                 await _publisher.PublishAsync("account.created", new
                 {
                     account.Id,
@@ -56,9 +55,6 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                     account.CreatedAt,
                     account.UpdatedAt
                 });
-
-                // Limpa cache 
-                await _cache.RemoveAsync($"account_{account.Id}");
 
                 var response = new AccountResponse(account);
                 return Result<AccountResponse>.Success(response);
