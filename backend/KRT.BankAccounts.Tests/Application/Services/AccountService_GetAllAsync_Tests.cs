@@ -65,22 +65,29 @@ namespace KRT.BankAccounts.Tests.Application.Services
             _repositoryMock.Verify(r => r.GetPagedAsync(pageNumber, pageSize), Times.Once);
         }
 
-        [Fact(DisplayName = "Deve falhar quando não houver contas")]
-        public async Task GetAllAsync_ShouldFail_WhenNoAccountsFound()
+        [Fact(DisplayName = "Deve retornar sucesso com lista vazia quando não houver contas")]
+        public async Task GetAllAsync_ShouldReturnEmptyList_WhenNoAccountsFound()
         {
             // Arrange
             _repositoryMock.Setup(r => r.CountAsync()).ReturnsAsync(0);
+            _repositoryMock.Setup(r => r.GetPagedAsync(It.IsAny<int>(), It.IsAny<int>()))
+                           .ReturnsAsync(new List<Account>()); // Nenhuma conta
 
             // Act
             var result = await _service.GetAllAsync(1, 10);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(ErrorCode.NOT_FOUND, result.ErrorCode);
-            Assert.Equal("Nenhuma conta encontrada.", result.ErrorMessage);
+            Assert.True(result.IsSuccess);
+            Assert.NotNull(result.Data);
+            Assert.Empty(result.Data.Items);
+            Assert.Equal(0, result.Data.TotalCount);
+            Assert.Equal(1, result.Data.CurrentPage);
+            Assert.Equal(10, result.Data.PageSize);
+            Assert.Equal(0, result.Data.TotalPages);
 
-            _repositoryMock.Verify(r => r.GetPagedAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
+            _repositoryMock.Verify(r => r.GetPagedAsync(1, 10), Times.Once);
         }
+
 
         [Fact(DisplayName = "Deve falhar ao ocorrer exceção no repositório")]
         public async Task GetAllAsync_ShouldFail_WhenRepositoryThrowsException()

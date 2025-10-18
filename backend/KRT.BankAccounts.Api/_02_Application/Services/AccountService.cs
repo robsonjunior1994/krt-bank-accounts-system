@@ -108,15 +108,10 @@ namespace KRT.BankAccounts.Api._02_Application.Services
             try
             {
                 var totalRecords = await _repository.CountAsync();
-                if (totalRecords == 0)
-                    return Result<PagedResult<AccountResponse>>.Failure(
-                        "Nenhuma conta encontrada.",
-                        ErrorCode.NOT_FOUND
-                    );
+                var accounts = await _repository.GetPagedAsync(pageNumber, pageSize)
+                                       ?? Enumerable.Empty<Account>();
 
-                var accounts = await _repository.GetPagedAsync(pageNumber, pageSize);
                 var responseList = accounts.Select(a => new AccountResponse(a)).ToList();
-
 
                 var pagedResult = new PagedResult<AccountResponse>(
                     responseList,
