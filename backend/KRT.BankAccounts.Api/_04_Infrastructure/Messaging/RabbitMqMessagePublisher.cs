@@ -1,11 +1,13 @@
-﻿using System.Text;
-using System.Text.Json;
-using KRT.BankAccounts.Api._02_Application.Interfaces.Infra;
+﻿using KRT.BankAccounts.Api._02_Application.Interfaces.Infra;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using System.Text.Json;
 
 namespace KRT.BankAccounts.Api._04_Infrastructure.Messaging
 {
+    [ExcludeFromCodeCoverage]
     public class RabbitMqMessagePublisher : IMessagePublisher
     {
         private readonly RabbitMqSettings _settings;
