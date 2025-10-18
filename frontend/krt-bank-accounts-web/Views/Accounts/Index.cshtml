@@ -96,3 +96,46 @@
         }
     </tbody>
 </table>
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Paginação">
+        <ul class="pagination justify-content-center mt-3">
+
+            <!-- Botão Anterior -->
+            <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-pageNumber="@(Model.CurrentPage - 1)"
+                   asp-route-pageSize="@Model.PageSize"
+                   aria-label="Anterior">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- Números das páginas -->
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pageNumber="@i"
+                       asp-route-pageSize="@Model.PageSize">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <!-- Botão Próximo -->
+            <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-pageNumber="@(Model.CurrentPage + 1)"
+                   asp-route-pageSize="@Model.PageSize"
+                   aria-label="Próximo">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}
+
