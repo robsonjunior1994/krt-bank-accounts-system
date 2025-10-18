@@ -1,0 +1,45 @@
+﻿@model krt_bank_accounts_web.Models.AccountViewModel
+
+<h2 class="mb-4">Detalhes da Conta</h2>
+
+<div class="card shadow-sm p-4">
+    <dl class="row">
+        <dt class="col-sm-3">ID</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
+        <dt class="col-sm-3">Nome</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">CPF</dt>
+        <dd class="col-sm-9">@Model.Cpf</dd>
+
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9">
+            @if (Model.Status == "Active")
+            {
+                <span class="badge bg-success">Ativa</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">Inativa</span>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Criado em</dt>
+        <dd class="col-sm-9">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+
+        <dt class="col-sm-3">Atualizado em</dt>
+        <dd class="col-sm-9">
+            @(Model.UpdatedAt.Year > 1 ? Model.UpdatedAt.ToString("dd/MM/yyyy HH:mm") : "-")
+        </dd>
+    </dl>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+        <i class="bi bi-pencil-square"></i> Editar
+    </a>
+</div>

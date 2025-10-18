@@ -53,8 +53,8 @@ namespace krt_bank_accounts_web.Tests.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.Single(result.Items);
-            Assert.Equal("Robson", result.Items.First().Name);
+            Assert.Single(result.Data.Items);
+            Assert.Equal("Robson", result.Data.Items.First().Name);
         }
 
         [Fact]

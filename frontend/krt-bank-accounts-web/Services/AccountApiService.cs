@@ -26,19 +26,19 @@ namespace krt_bank_accounts_web.Services
             };
         }
 
-        public async Task<PagedResponse<AccountViewModel>?> GetAllAsync(int pageNumber = 1, int pageSize = 5)
+        public async Task<ApiResponse<PagedResponse<AccountViewModel>>?> GetAllAsync(int pageNumber = 1, int pageSize = 5)
         {
             try
             {
                 var response = await _http.GetFromJsonAsync<ApiResponse<PagedResponse<AccountViewModel>>>(
                     $"account?pageNumber={pageNumber}&pageSize={pageSize}");
 
-                return response?.Data;
+                return response;
             }
             catch (HttpRequestException ex)
             {
                 _logger.LogError(ex, "Falha de conexão com a API.");
-                return null;
+                return null; // Falha real de comunicação
             }
             catch (Exception ex)
             {

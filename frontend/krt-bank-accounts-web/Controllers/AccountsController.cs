@@ -16,17 +16,24 @@ namespace krt_bank_accounts_web.Controllers
 
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 5)
         {
-            var pagedData = await _service.GetAllAsync(pageNumber, pageSize);
+            var result = await _service.GetAllAsync(pageNumber, pageSize);
 
-            if (pagedData == null)
+            if (result == null)
             {
-                TempData["ErrorMessage"] = "Não foi possível conectar à API. Tente novamente mais tarde.";
+                TempData["ErrorMessage"] = "Não foi possível conectar à API. Verifique se o serviço está em execução.";
                 return View(new PagedResponse<AccountViewModel>());
             }
 
+            if (!result.IsSuccess)
+            {
+                // API respondeu erro (500, 400, etc)
+                TempData["ErrorMessage"] = result.Message ?? "Erro desconhecido ao buscar contas.";
+                return View(new PagedResponse<AccountViewModel>());
+            }
 
-            return View(pagedData);
+            return View(result.Data ?? new PagedResponse<AccountViewModel>());
         }
+
 
         [HttpGet]
         public IActionResult Create()
@@ -51,7 +58,6 @@ namespace krt_bank_accounts_web.Controllers
             TempData["SuccessMessage"] = "Conta criada com sucesso!";
             return RedirectToAction(nameof(Index));
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -107,6 +113,17 @@ namespace krt_bank_accounts_web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var account = await _service.GetByIdAsync(id);
 
+            if (account == null)
+            {
+                TempData["ErrorMessage"] = "Conta não encontrada ou erro ao consultar a API.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(account);
+        }
     }
 }
