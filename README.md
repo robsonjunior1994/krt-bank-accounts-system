@@ -1,40 +1,55 @@
-﻿# krt-bank-accounts-system
+# 🏦 KRT Bank Accounts System
+
+---
 
 <details>
+  <summary><strong>🧩 Configuração inicial da aplicação</strong></summary>
 
-<summary>SQL Server</summary>
+  <br/>
 
-## 🏦 **Banco de Dados — Configuração (SQL Server via Docker)**
+### ✅ **Pré-requisitos**
 
-### 🧩 **Passo a passo**
-
-#### 1️⃣ Baixar a imagem oficial do SQL Server
-
-```bash
-docker pull mcr.microsoft.com/mssql/server:2022-latest
-```
+* [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+* [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+* [Visual Studio 2022](https://visualstudio.microsoft.com/) (ou VS Code)
 
 ---
 
-#### 2️⃣ Rodar o container do SQL Server
+  <details>
+    <summary><strong>1️⃣ Subir os serviços necessários</strong></summary>
+
+  <br/>
+
+A aplicação depende dos seguintes serviços:
+
+* 🏦 **SQL Server** → banco de dados principal
+* 🧰 **Redis** → cache de contas consultadas
+* 🐇 **RabbitMQ** → mensageria para eventos de integração
+
+Para subir todos de uma vez, execute na raiz do projeto:
 
 ```bash
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Root@12345" -p 1433:1433 --name sqlserver2022 -d mcr.microsoft.com/mssql/server:2022-latest
+docker compose up -d
 ```
 
-🔹 Esse comando vai:
+Isso criará e iniciará automaticamente **SQL Server**, **Redis** e **RabbitMQ**.
 
-* Aceitar o contrato da Microsoft (`ACCEPT_EULA=Y`);
-* Definir a senha do administrador (`Root@12345`);
-* Expor a porta **1433** (padrão do SQL Server);
-* Criar o container chamado **sqlserver2022**;
-* Usar a imagem **2022-latest**.
+Para verificar se estão rodando corretamente:
+
+```bash
+docker ps
+```
+
+  </details>
 
 ---
 
-## 🧱 **Executando Migrações (Entity Framework Core)**
+  <details>
+    <summary><strong>2️⃣ Executar migrações (Entity Framework Core)</strong></summary>
 
-### ⚠️ Instale a ferramenta se ainda não tiver:
+  <br/>
+
+#### ⚙️ Instale a ferramenta do Entity Framework (caso não tenha):
 
 ```bash
 dotnet tool install --global dotnet-ef --version 8.0.21
@@ -42,7 +57,7 @@ dotnet tool install --global dotnet-ef --version 8.0.21
 
 ---
 
-### 1️⃣ Acesse a pasta da API
+#### 1️⃣ Acesse a pasta da API:
 
 ```bash
 cd backend/KRT.BankAccounts.Api
@@ -50,10 +65,10 @@ cd backend/KRT.BankAccounts.Api
 
 ---
 
-### 2️⃣ (Opcional) Criar a primeira migração
+#### 2️⃣ (Opcional) Criar a primeira migration:
 
-> ⚠️ Esse passo só é necessário se quiser **gerar a migration do zero**.
-> Caso ela já exista no repositório, pule para o passo 3.
+> ⚠️ Só necessário se você quiser gerar a migration do zero.
+> Caso ela já exista, pule para o passo 3.
 
 ```bash
 dotnet ef migrations add InitialCreate --project ../KRT.BankAccounts.Api --startup-project ../KRT.BankAccounts.Api --output-dir ../KRT.BankAccounts.Api/_04_Infrastructure/Migrations
@@ -61,204 +76,194 @@ dotnet ef migrations add InitialCreate --project ../KRT.BankAccounts.Api --start
 
 ---
 
-### 3️⃣ Aplicar as migrações ao banco
+#### 3️⃣ Aplicar as migrações ao banco:
 
 ```bash
 dotnet ef database update --project ../KRT.BankAccounts.Api --startup-project ../KRT.BankAccounts.Api
 ```
+  </details>
 
 ---
 
-### ✅ Resultado esperado
+  <details>
+    <summary><strong>3️⃣ Rodando o projeto</strong></summary>
 
-Após o comando acima:
+  <br/>
 
-* O banco `KRTBankAccounts` será criado no container SQL Server;
-* As tabelas (`Accounts`, etc.) serão aplicadas automaticamente;
-* Você poderá conectar ao banco usando o SQL Server Management Studio (SSMS), Azure Data Studio ou DBeaver.
+* 🧱 **Backend (API .NET 8)**
+  Acesse a pasta `backend/KRT.BankAccounts.Api` e rode o projeto:
 
-🧠 **Credenciais padrão:**
+  * Via **Visual Studio** → selecione *KRT.BankAccounts.Api* como projeto de inicialização e pressione ▶️ *Executar*
+  * Ou via CLI:
+  * Vá até a pasta ./backend/KRT.BankAccounts.Api
+    ```bash
+    dotnet run --urls "https://localhost:7020"
+    ```
 
-* **Servidor:** `localhost,1433`
-* **Usuário:** `sa`
-* **Senha:** `Root@12345`
+* 💻 **Frontend (ASP.NET MVC)**
+    
+    Acesse a pasta do frontend MVC:
+    
+  
+    ```bash
+    cd frontend/KRT.BankAccounts.Web
+    ```
+    
+    * **Via Visual Studio:**
+      Selecione o projeto **KRT.BankAccounts.Web** como *Startup Project* e pressione ▶️ *Executar*
 
----
+    Vá até a pasta ./frontend/krt-bank-accounts-web
+  
+    * **Ou via CLI:**
+    
+      ```bash
+      dotnet run --urls "https://localhost:7286"
+      ```
+    
+    🌐 **Aplicação web disponível em:**
+    [https://localhost:7286](http://localhost:7286) *(ou conforme a porta configurada no launchSettings.json)*
 
-## 🧪 **Testando a conexão rapidamente**
 
-Você pode testar a conexão diretamente com:
-
-```bash
-sqlcmd -S localhost,1433 -U sa -P Root@12345 -d KRTBankAccounts
-```
-
-Se aparecer o prompt `1>`, o banco está conectado corretamente
-
-ctrl + c para sair.
+  </details>
 
 </details>
 
-<details>
-<summary>REDIS para cache</summary>
+---
 
+<img width="1246" height="897" alt="KRT Bank Accounts System Architecture" src="https://github.com/user-attachments/assets/dcbaf102-d01b-4d85-94ff-c2249a0f397e" />
 
-# 🧰 Cache (Redis) — Setup local com Docker
+# 🏦 KRT Bank Accounts API — Descrição Técnica
 
-## 1) Baixar a imagem do Redis
+## 🎯 **Objetivo da Aplicação**
 
-```bash
-docker pull redis:7-alpine
-```
+A **KRT Bank Accounts API** é uma solução desenvolvida em **.NET 8**, cujo propósito é **gerenciar as contas de clientes do banco KRT**.
+Ela permite realizar o CRUD completo das contas — **criação, consulta, atualização, ativação/inativação e exclusão** — garantindo uma arquitetura escalável, organizada e pronta para integração com outros sistemas internos do banco.
 
-> `alpine` é levinho e ótimo para desenvolvimento.
+Cada conta possui:
+
+* `Id`
+* `Name` (nome do titular)
+* `Cpf`
+* `Status` (Ativa / Inativa)
+* `CreatedAt` e `UpdatedAt` (controle temporal)
 
 ---
 
-## 2) Subir o container do Redis
+## ⚙️ **Arquitetura e Boas Práticas Aplicadas**
 
-### COM senha (recomendado)
+A aplicação foi construída seguindo **DDD (Domain-Driven Design)**, **Clean Architecture** e **SOLID Principles**, com camadas bem definidas:
 
-```bash
-docker run -d --name redis-cache -p 6379:6379  -e REDIS_PASSWORD=devpassword123 redis:7-alpine  redis-server --requirepass devpassword123
+```
+├── _01_Presentation      → Controllers e DTOs (entrada/saída de dados)
+├── _02_Application       → Regras de negócio, validações e orquestração de serviços
+├── _03_Domain            → Entidades e regras de domínio puro (ex: Account)
+├── _04_Infrastructure    → Persistência, cache e mensageria (SQL, Redis, RabbitMQ)
 ```
 
-> **Dica:** quer persistência entre reinícios? Adicione `-v redisdata:/data` ao comando.
+### ✅ **Principais práticas aplicadas**
+
+| Conceito                         | Implementação                                                                                                    |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **SOLID**                        | Classes coesas, injeção de dependência, interfaces claras e responsabilidade única.                              |
+| **DDD**                          | Separação clara entre domínio (entidades), aplicação (casos de uso) e infraestrutura (implementações concretas). |
+| **Clean Code**                   | Métodos curtos, nomes expressivos, retorno padronizado (`Result<T>` e `ResponseDto>`).                           |
+| **Padrão MVC**                   | Controllers isolam lógica de negócio, chamando serviços de aplicação.                                            |
+| **Padrão Repository**            | Acesso a dados centralizado via `IAccountRepository`.                                                            |
+| **Injeção de Dependência (IoC)** | Usando `IServiceCollection` para registrar todos os serviços, repositórios, cache e mensageria.                  |
+| **DTOs de Request/Response**     | Separação total entre modelos de entrada/saída e entidades do domínio.                                           |
 
 ---
 
-## 3) Testar o Redis (opcional)
+## 🧠 **Tecnologias Utilizadas**
 
-### Com senha:
-
-```bash
-docker exec -it redis-cache redis-cli -a devpassword123 ping
-# PONG
-```
-
----
-
-## 5) Subir a API
-
-```bash
-dotnet restore
-dotnet build
-dotnet run
-```
-
-Endpoint de saúde rápido (exemplo):
-`GET http://localhost:5000/api/account` (ajuste conforme sua porta)
+| Tecnologia                   | Finalidade                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| **.NET 8 (C#)**              | Linguagem e framework principal da aplicação.                                  |
+| **Entity Framework Core 8**  | ORM para persistência no banco de dados SQL Server.                            |
+| **SQL Server 2022 (Docker)** | Armazenamento principal das contas dos clientes.                               |
+| **Redis 7 (Docker)**         | Cache de contas consultadas, reduzindo custo de consultas recorrentes.         |
+| **RabbitMQ 3 (Docker)**      | Mensageria para publicar eventos de criação, atualização e exclusão de contas. |
+| **xUnit + Moq**              | Testes unitários cobrindo todos os cenários críticos dos serviços.             |
+| **Swagger**                  | Documentação automática e interação com endpoints.                             |
+| **Docker Compose**           | Orquestração dos containers (SQL, Redis, RabbitMQ, API).                       |
 
 ---
 
-## 6) (Opcional) Docker Compose
+## 🚀 **Fluxo de Funcionamento**
 
-Se preferir **subir tudo com um arquivo**:
+### 🔹 **1. Criação de Conta**
 
-```yaml
-# docker-compose.yml
-services:
-  redis:
-    image: redis:7-alpine
-    container_name: redis-cache
-    command: ["redis-server", "--requirepass", "devpassword123"]
-    ports:
-      - "6379:6379"
-    volumes:
-      - redisdata:/data
-    restart: unless-stopped
+1. O cliente envia `POST /api/account`.
+2. O serviço valida CPF e nome.
+3. Cria a entidade `Account` e salva no SQL Server.
+4. Publica evento `account.created` no RabbitMQ.
+5. Retorna `ResponseDto` padronizado.
 
-volumes:
-  redisdata:
-```
+### 🔹 **2. Consulta de Conta**
 
-Subir:
+1. O serviço tenta buscar a conta no **Redis Cache**.
+2. Se não encontrar, busca no **SQL Server**, armazena no cache e retorna.
+3. Evita custos desnecessários de consultas repetidas.
+
+### 🔹 **3. Atualização / Exclusão**
+
+1. Atualiza dados e status da conta.
+2. Publica o evento correspondente no RabbitMQ.
+3. Remove o cache da conta afetada para manter consistência.
+
+---
+
+## 🧩 **Testes Unitários**
+
+Os testes foram criados com **xUnit + Moq**, cobrindo:
+
+* Cenários de sucesso (Create, Update, GetById, Delete).
+* Validações de CPF duplicado.
+* Erros de banco (simulados com exceções).
+* Validação de cache e publicação de eventos.
+
+Esses testes garantem **confiabilidade** e **resiliência**, validando os comportamentos de negócio independentemente da infraestrutura.
+
+---
+
+## 🧱 **Camada de Infraestrutura**
+
+| Componente                   | Função                                                                          | Implementação                             |
+| ---------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------- |
+| **RedisCacheService**        | Armazena contas consultadas por ID com TTL configurável via `appsettings.json`. | Implementado via `StackExchange.Redis`.   |
+| **RabbitMqMessagePublisher** | Publica eventos JSON para outros serviços internos.                             | Baseado em `RabbitMQ.Client`.             |
+| **AccountRepository**        | Executa queries no banco via EF Core.                                           | Repositório isolado da lógica de negócio. |
+
+---
+
+## 🧰 **DevOps**
+
+Os serviços externos necessários para a aplicação (banco, cache e mensageria) podem ser levantados com um único comando usando o **Docker Compose**:
 
 ```bash
 docker compose up -d
 ```
 
-Use em `appsettings.json`:
+Com isso, sobem automaticamente os seguintes containers:
 
-```json
-"RedisConnection": "localhost:6379,password=devpassword123"
-```
-
----
-
-## 7) Troubleshooting rápido
-
-* **`ECONNREFUSED`**: verifique se a porta `6379` está livre e o container está rodando: `docker ps`.
-* **`NOAUTH Authentication required`**: você subiu o Redis **com senha**; adicione `password=...` no connection string.
-* **TimeOut**: adicione `abortConnect=false` no connection string para evitar abortar na primeira tentativa:
-
-  ```json
-  "RedisConnection": "localhost:6379,password=devpassword123,abortConnect=false"
-  ```
-
----
-</details>
-
-<details>
-<summary> RabbitMQ </summary
-
-Perfeito, Robson 🔥 — hora de configurar a **mensageria** pra completar o desafio com chave de ouro!
-Você já preparou tudo certinho pra isso: arquitetura em camadas, injeção de dependência, e até um publisher mockado.
-Agora vamos fazer o RabbitMQ rodar **de verdade**, mas mantendo o projeto limpo e desacoplado.
+| Serviço           | Descrição                                                         | Endereço                                         |
+| ----------------- | ----------------------------------------------------------------- | ------------------------------------------------ |
+| 🏦 **SQL Server** | Banco de dados principal (armazenamento das contas)               | `localhost:1433`                                 |
+| 🧰 **Redis**      | Cache para otimizar consultas repetidas                           | `localhost:6379`                                 |
+| 🐇 **RabbitMQ**   | Broker de mensageria (eventos de criação, atualização e exclusão) | [http://localhost:15672](http://localhost:15672) |
 
 ---
 
-## 🧩 1️⃣ Criar container RabbitMQ (com painel de controle)
+## 📊 **Conclusão**
 
-No seu passo a passo do projeto (tipo o que você fez pro SQL e Redis), adiciona esta parte 👇
+A **KRT Bank Accounts API** é um projeto que demonstra:
 
-```bash
-# 🐇 Baixar a imagem do RabbitMQ com o painel de administração
-docker pull rabbitmq:3-management
+* Estrutura profissional em **DDD + Clean Architecture**;
+* Aplicação prática de **SOLID, Clean Code e boas práticas REST**;
+* Uso de **cache inteligente** (Redis) para reduzir custos e latência;
+* **Mensageria** para comunicação entre sistemas e consistência eventual;
+* **Testes unitários** assegurando robustez do domínio;
+* **Documentação e Docker Compose** para facilitar execução e avaliação.
 
-# 🚀 Rodar o container com painel web habilitado
-docker run -d --name rabbitmq  -p 5672:5672  -p 15672:15672  -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest rabbitmq:3-management
-```
+💡 Essa abordagem reflete um **ambiente real de produção bancária**, com foco em **performance, extensibilidade e manutenção**.
 
-📍 **Acesso ao painel web:**
-👉 [http://localhost:15672](http://localhost:15672)
-Usuário: `guest`
-Senha: `guest`
-
----
-
-## 🧩 7️⃣ Publicar eventos na aplicação
-
-Agora em qualquer serviço (ex: `AccountService`), você pode publicar eventos como:
-
-```csharp
-await _publisher.PublishAsync("account.created", new
-{
-    account.Id,
-    account.Name,
-    account.Cpf,
-    Status = account.Status.ToString()
-});
-```
-
-ou
-
-```csharp
-await _publisher.PublishAsync("account.deleted", new { account.Id });
-```
-
----
-
-## 🧩 8️⃣ Verificar publicação
-
-Acesse o painel RabbitMQ:
-🔗 [http://localhost:15672](http://localhost:15672)
-→ Vá em **Exchanges → krt.bank.exchange**
-→ Clique em **Queues → krt.account.events**
-→ Clique em **Get messages**
-
-Você verá a mensagem JSON chegando!
-
----
-
-</details>
