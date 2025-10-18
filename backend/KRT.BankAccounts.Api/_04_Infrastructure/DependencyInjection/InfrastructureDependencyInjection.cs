@@ -3,10 +3,11 @@ using KRT.BankAccounts.Api._03_Domain.Interfaces;
 using KRT.BankAccounts.Api._04_Infrastructure.Cache;
 using KRT.BankAccounts.Api._04_Infrastructure.Messaging;
 using KRT.BankAccounts.Api._04_Infrastructure.Repositories;
-using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace KRT.BankAccounts.Api._04_Infrastructure.DependencyInjection
 {
+    [ExcludeFromCodeCoverage]
     public static class InfrastructureDependencyInjection
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)

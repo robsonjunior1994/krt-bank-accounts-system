@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace KRT.BankAccounts.Api._01_Presentation.DTOs.Request
 {
+    [ExcludeFromCodeCoverage]
     public class CreateAccountRequest
     {
         [Required(ErrorMessage = "O nome é obrigatório.")]

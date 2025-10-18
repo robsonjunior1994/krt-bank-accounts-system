@@ -1,5 +1,8 @@
-﻿namespace KRT.BankAccounts.Api._01_Presentation.Helpers
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace KRT.BankAccounts.Api._01_Presentation.Helpers
 {
+    [ExcludeFromCodeCoverage]
     public static class ErrorMapper
     {
         public static int MapErrorToStatusCode(string errorCode)

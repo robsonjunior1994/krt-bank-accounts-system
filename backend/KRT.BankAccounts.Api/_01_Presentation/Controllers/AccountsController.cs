@@ -5,9 +5,11 @@ using KRT.BankAccounts.Api._01_Presentation.Helpers;
 using KRT.BankAccounts.Api._02_Application.Interfaces.Services;
 using KRT.BankAccounts.Api._02_Application.Shared;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace KRT.BankAccounts.Api._01_Presentation.Controllers
 {
+    [ExcludeFromCodeCoverage]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase

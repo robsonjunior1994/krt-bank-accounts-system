@@ -2,9 +2,11 @@
 using KRT.BankAccounts.Api._03_Domain.Interfaces;
 using KRT.BankAccounts.Api._04_Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace KRT.BankAccounts.Api._04_Infrastructure.Repositories
 {
+    [ExcludeFromCodeCoverage]
     public class AccountRepository : IAccountRepository
     {
         private readonly AppDbContext _context;

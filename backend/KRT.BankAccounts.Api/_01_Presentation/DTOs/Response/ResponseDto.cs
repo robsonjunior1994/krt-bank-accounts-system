@@ -1,5 +1,8 @@
-﻿namespace KRT.BankAccounts.Api._01_Presentation.Dtos.Response
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace KRT.BankAccounts.Api._01_Presentation.Dtos.Response
 {
+    [ExcludeFromCodeCoverage]
     public sealed class ResponseDto
     {
         public bool IsSuccess { get; init; }
