@@ -233,20 +233,21 @@ Esses testes garantem **confiabilidade** e **resiliência**, validando os compor
 
 ---
 
-## 🧰 **DevOps & Deploy**
+## 🧰 **DevOps**
 
-A aplicação e os serviços externos (SQL, Redis, RabbitMQ) podem ser levantados via:
+Os serviços externos necessários para a aplicação (banco, cache e mensageria) podem ser levantados com um único comando usando o **Docker Compose**:
 
 ```bash
 docker compose up -d
 ```
 
-Com isso, toda a stack sobe automaticamente:
+Com isso, sobem automaticamente os seguintes containers:
 
-* API → `https://localhost:7020`
-* SQL → `localhost:1433`
-* Redis → `localhost:6379`
-* RabbitMQ → `http://localhost:15672`
+| Serviço           | Descrição                                                         | Endereço                                         |
+| ----------------- | ----------------------------------------------------------------- | ------------------------------------------------ |
+| 🏦 **SQL Server** | Banco de dados principal (armazenamento das contas)               | `localhost:1433`                                 |
+| 🧰 **Redis**      | Cache para otimizar consultas repetidas                           | `localhost:6379`                                 |
+| 🐇 **RabbitMQ**   | Broker de mensageria (eventos de criação, atualização e exclusão) | [http://localhost:15672](http://localhost:15672) |
 
 ---
 
