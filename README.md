@@ -95,30 +95,33 @@ dotnet ef database update --project ../KRT.BankAccounts.Api --startup-project ..
 
   * Via **Visual Studio** → selecione *KRT.BankAccounts.Api* como projeto de inicialização e pressione ▶️ *Executar*
   * Ou via CLI:
-
+  * Vá até a pasta ./backend/KRT.BankAccounts.Api
     ```bash
-    dotnet run --project ./backend/KRT.BankAccounts.Api
+    dotnet run --urls "https://localhost:7020"
     ```
 
 * 💻 **Frontend (ASP.NET MVC)**
     
     Acesse a pasta do frontend MVC:
     
+  
     ```bash
     cd frontend/KRT.BankAccounts.Web
     ```
     
     * **Via Visual Studio:**
       Selecione o projeto **KRT.BankAccounts.Web** como *Startup Project* e pressione ▶️ *Executar*
-    
+
+    Vá até a pasta ./frontend/krt-bank-accounts-web
+  
     * **Ou via CLI:**
     
       ```bash
-      dotnet run --project ./frontend/KRT.BankAccounts.Web
+      dotnet run --urls "https://localhost:7286"
       ```
     
     🌐 **Aplicação web disponível em:**
-    [http://localhost:5146](http://localhost:5146) *(ou conforme a porta configurada no launchSettings.json)*
+    [https://localhost:7286](http://localhost:7286) *(ou conforme a porta configurada no launchSettings.json)*
 
 
   </details>
