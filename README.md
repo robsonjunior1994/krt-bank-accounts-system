@@ -3,7 +3,7 @@
 ---
 
 <details>
-  <summary><strong>🧩 Configuração inicial da aplicação</strong></summary>
+  <summary><strong>⚠️CLIQUE AQUI ⚠️ PARA: Configuração inicial da aplicação</strong></summary>
 
   <br/>
 
