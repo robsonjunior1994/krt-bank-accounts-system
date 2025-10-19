@@ -120,7 +120,7 @@ namespace KRT.BankAccounts.Tests.Application.Services
             var request = new UpdateAccountRequest
             {
                 Name = "Robson Novo",
-                Cpf = "55555555555" // mesmo CPF
+                Cpf = "55555555555"
             };
 
             _repositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(account);

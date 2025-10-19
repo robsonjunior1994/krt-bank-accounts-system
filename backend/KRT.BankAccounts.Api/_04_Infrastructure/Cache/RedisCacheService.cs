@@ -31,7 +31,6 @@ namespace KRT.BankAccounts.Api._04_Infrastructure.Cache
             }
             catch
             {
-                // Caso o valor no cache esteja corrompido (ou tipo diferente)
                 await RemoveAsync(key);
                 return default;
             }
@@ -41,7 +40,6 @@ namespace KRT.BankAccounts.Api._04_Infrastructure.Cache
         {
             var json = JsonSerializer.Serialize(value);
 
-            // Usa o TTL configurado no appsettings caso não seja informado
             var ttl = expiration ?? TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes);
 
             await _database.StringSetAsync(key, json, ttl);

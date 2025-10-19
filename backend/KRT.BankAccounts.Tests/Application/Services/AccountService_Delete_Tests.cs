@@ -58,7 +58,6 @@ namespace KRT.BankAccounts.Tests.Application.Services
             Assert.Null(result.ErrorCode);
             Assert.Null(result.ErrorMessage);
 
-            // Verifica se as dependências foram chamadas corretamente
             _repositoryMock.Verify(r => r.GetByIdAsync(1), Times.Once);
             _repositoryMock.Verify(r => r.DeleteAsync(account), Times.Once);
             _publisherMock.Verify(p => p.PublishAsync("account.deleted", It.IsAny<object>()), Times.Once);

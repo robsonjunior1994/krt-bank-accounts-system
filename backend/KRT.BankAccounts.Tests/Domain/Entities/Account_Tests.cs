@@ -19,7 +19,7 @@ namespace KRT.BankAccounts.Tests.Domain.Entities
             Assert.Equal("12345678901", account.Cpf);
             Assert.Equal(AccountStatus.Active, account.Status);
             Assert.True(account.CreatedAt <= DateTime.UtcNow);
-            Assert.Equal(default, account.UpdatedAt); // ainda não atualizado
+            Assert.Equal(default, account.UpdatedAt);
         }
 
         [Fact(DisplayName = "Deve permitir instanciar via construtor protegido (para EF Core)")]

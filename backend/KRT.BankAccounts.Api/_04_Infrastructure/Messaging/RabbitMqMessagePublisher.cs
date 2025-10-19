@@ -29,10 +29,10 @@ namespace KRT.BankAccounts.Api._04_Infrastructure.Messaging
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
 
-            // Declaração do Exchange e Queue
             _channel.ExchangeDeclare(exchange: _settings.Exchange, type: ExchangeType.Topic, durable: true);
-            _channel.QueueDeclare(queue: _settings.Queue, durable: true, exclusive: false, autoDelete: false);
-            _channel.QueueBind(_settings.Queue, _settings.Exchange, _settings.RoutingKey);
+            // Utilziada para teste a aplicação não deve conhecer a fila diretamente, apenas o exchange
+            //_channel.QueueDeclare(queue: _settings.Queue, durable: true, exclusive: false, autoDelete: false);
+            //_channel.QueueBind(_settings.Queue, _settings.Exchange, _settings.RoutingKey);
         }
 
         public Task PublishAsync(string eventType, object data)

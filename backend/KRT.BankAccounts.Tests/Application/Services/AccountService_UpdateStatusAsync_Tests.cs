@@ -40,7 +40,7 @@ namespace KRT.BankAccounts.Tests.Application.Services
         {
             // Arrange
             var account = new Account("Robson", "12345678901");
-            account.Deactivate(); // deixa inativa para poder ativar
+            account.Deactivate();
 
             _repositoryMock.Setup(r => r.GetByIdAsync(account.Id)).ReturnsAsync(account);
             _repositoryMock.Setup(r => r.UpdateAsync(account)).Returns(Task.CompletedTask);

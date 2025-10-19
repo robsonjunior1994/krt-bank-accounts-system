@@ -78,7 +78,6 @@ namespace KRT.BankAccounts.Api._02_Application.Services
 
                 await _repository.DeleteAsync(account);
 
-                // Publicação de evento (RabbitMQ)
                 await _publisher.PublishAsync("account.deleted", new
                 {
                     account.Id,
@@ -89,7 +88,6 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                     account.UpdatedAt
                 });
 
-                // Limpeza de cache (caso exista)
                 await _cache.RemoveAsync($"account_{account.Id}");
 
                 return Result.Success();
@@ -135,7 +133,6 @@ namespace KRT.BankAccounts.Api._02_Application.Services
         {
             try
             {
-                // Tenta buscar do cache primeiro
                 var cacheKey = $"account_{id}";
                 var cachedAccount = await _cache.GetAsync<AccountResponse>(cacheKey);
 
@@ -186,7 +183,6 @@ namespace KRT.BankAccounts.Api._02_Application.Services
 
                 await _repository.UpdateAsync(account);
 
-                //// Publica evento conforme a ação
                 var eventName = ativar ? "account.activate" : "account.disable";
                 await _publisher.PublishAsync(eventName, new
                 {

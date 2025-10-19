@@ -71,7 +71,7 @@ namespace KRT.BankAccounts.Tests.Application.Services
             // Arrange
             _repositoryMock.Setup(r => r.CountAsync()).ReturnsAsync(0);
             _repositoryMock.Setup(r => r.GetPagedAsync(It.IsAny<int>(), It.IsAny<int>()))
-                           .ReturnsAsync(new List<Account>()); // Nenhuma conta
+                           .ReturnsAsync(new List<Account>());
 
             // Act
             var result = await _service.GetAllAsync(1, 10);
