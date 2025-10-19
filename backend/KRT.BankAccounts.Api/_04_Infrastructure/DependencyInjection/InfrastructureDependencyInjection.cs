@@ -16,7 +16,10 @@ namespace KRT.BankAccounts.Api._04_Infrastructure.DependencyInjection
 
             services.AddSingleton<ICacheService, RedisCacheService>();
 
-            services.AddSingleton<IMessagePublisher, RabbitMqMessagePublisher>();
+            // Forma de publicar mais simples, não existe a implementação de publicação async
+            // Estou deixando esse comentário aqui para comparação e debate
+            //services.AddSingleton<IMessagePublisher, RabbitMqMessagePublisher>();
+            services.AddSingleton<IMessagePublisher, EasyNetQMessagePublisher>();
 
             return services;
         }
