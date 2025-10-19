@@ -53,7 +53,7 @@ namespace KRT.BankAccounts.Api._04_Infrastructure.Messaging
                 body: body
             );
 
-            Console.WriteLine($"[🐇 RABBITMQ] Event published: {eventType}");
+            Console.WriteLine($"Event published: {eventType}");
             return Task.CompletedTask;
         }
     }
