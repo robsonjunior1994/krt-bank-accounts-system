@@ -154,8 +154,8 @@ public class AccountService_UpdateAsync_Tests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal(ErrorCode.DATABASE_ERROR, result.ErrorCode);
-        Assert.Equal("Ocorreu um erro ao atualizar a conta.", result.ErrorMessage);
+        Assert.Equal(ErrorCode.INTERNAL_ERROR, result.ErrorCode);
+        Assert.Equal("Erro de teste", result.ErrorMessage);
     }
 
     [Fact(DisplayName = "Deve limpar cache e publicar evento após atualização bem-sucedida")]

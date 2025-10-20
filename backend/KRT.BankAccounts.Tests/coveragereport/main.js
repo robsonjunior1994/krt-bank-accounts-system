@@ -213,11 +213,13 @@ var assemblies = [
   {
     "name": "KRT.BankAccounts.Api",
     "classes": [
-      { "name": "KRT.BankAccounts.Api._02_Application.Services.AccountService", "rp": "KRT.BankAccounts.Api_AccountService.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 256, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "KRT.BankAccounts.Api._02_Application.Shared.PagedResult<T>", "rp": "KRT.BankAccounts.Api_PagedResult_1.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 19, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "KRT.BankAccounts.Api._02_Application.Shared.Result", "rp": "KRT.BankAccounts.Api_Result.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 37, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "KRT.BankAccounts.Api._02_Application.Shared.Result<T>", "rp": "KRT.BankAccounts.Api_Result_1.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 37, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "KRT.BankAccounts.Api._03_Domain.Entities.Account", "rp": "KRT.BankAccounts.Api_Account.html", "cl": 32, "ucl": 0, "cal": 32, "tl": 61, "cb": 10, "tb": 10, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KRT.BankAccounts.Api._02_Application.Services.AccountService", "rp": "KRT.BankAccounts.Api_AccountService.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 251, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KRT.BankAccounts.Api._02_Application.Shared.PagedResult<T>", "rp": "KRT.BankAccounts.Api_PagedResult_1.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 18, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KRT.BankAccounts.Api._02_Application.Shared.Result", "rp": "KRT.BankAccounts.Api_Result.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 36, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KRT.BankAccounts.Api._02_Application.Shared.Result<T>", "rp": "KRT.BankAccounts.Api_Result_1.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 36, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KRT.BankAccounts.Api._03_Domain.Entities.Account", "rp": "KRT.BankAccounts.Api_Account.html", "cl": 32, "ucl": 0, "cal": 32, "tl": 60, "cb": 10, "tb": 10, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KRT.BankAccounts.Api._04_Infrastructure.Cache.RedisCacheService", "rp": "KRT.BankAccounts.Api_RedisCacheService.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 51, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KRT.BankAccounts.Api._04_Infrastructure.Messaging.RabbitMqMessagePublisher", "rp": "KRT.BankAccounts.Api_RabbitMqMessagePublisher.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 105, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
 ];
 

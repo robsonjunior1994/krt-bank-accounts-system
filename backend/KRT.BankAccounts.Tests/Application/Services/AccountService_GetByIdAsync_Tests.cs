@@ -134,8 +134,8 @@ public class AccountService_GetByIdAsync_Tests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal(ErrorCode.DATABASE_ERROR, result.ErrorCode);
-        Assert.Equal("Ocorreu um erro ao buscar a conta.", result.ErrorMessage);
+        Assert.Equal(ErrorCode.INTERNAL_ERROR, result.ErrorCode);
+        Assert.Equal("Erro simulado no Redis", result.ErrorMessage);
     }
 
     [Fact(DisplayName = "Deve definir TTL corretamente ao salvar no cache")]

@@ -191,6 +191,15 @@ public class AccountService : IAccountService
             var response = new AccountResponse(account);
             return Result<AccountResponse>.Success(response);
         }
+
+        catch (InvalidOperationException ex)
+        {
+            return Result<AccountResponse>.Failure(
+                ex.Message,
+                ErrorCode.VALIDATION_ERROR
+            );
+        }
+
         catch (Exception ex)
         {
             return Result<AccountResponse>.Failure(

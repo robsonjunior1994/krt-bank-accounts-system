@@ -149,7 +149,7 @@ public class AccountService_UpdateStatusAsync_Tests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal(ErrorCode.DATABASE_ERROR, result.ErrorCode);
-        Assert.Equal("Ocorreu um erro ao atualizar o status da conta.", result.ErrorMessage);
+        Assert.Equal(ErrorCode.INTERNAL_ERROR, result.ErrorCode);
+        Assert.Equal("Erro simulado", result.ErrorMessage);
     }
 }

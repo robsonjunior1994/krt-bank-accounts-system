@@ -7,7 +7,6 @@ using System.Text.Json;
 
 namespace KRT.BankAccounts.Api._04_Infrastructure.Messaging;
 
-[ExcludeFromCodeCoverage]
 public class RabbitMqMessagePublisher : IMessagePublisher, IAsyncDisposable
 {
     private readonly RabbitMqSettings _settings;

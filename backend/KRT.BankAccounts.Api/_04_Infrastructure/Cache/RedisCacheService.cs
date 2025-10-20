@@ -6,7 +6,6 @@ using System.Text.Json;
 
 namespace KRT.BankAccounts.Api._04_Infrastructure.Cache;
 
-[ExcludeFromCodeCoverage]
 public class RedisCacheService : ICacheService
 {
     private readonly IDatabase _database;

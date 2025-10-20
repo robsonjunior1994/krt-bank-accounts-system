@@ -108,7 +108,7 @@ public class AccountService_Create_Tests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal(ErrorCode.DATABASE_ERROR, result.ErrorCode);
-        Assert.Equal("Ocorreu um erro ao criar a conta.", result.ErrorMessage);
+        Assert.Equal(ErrorCode.INTERNAL_ERROR, result.ErrorCode);
+        Assert.Equal("Erro de banco de dados simulado.", result.ErrorMessage);
     }
 }

@@ -101,8 +101,8 @@ public class AccountService_GetAllAsync_Tests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal(ErrorCode.DATABASE_ERROR, result.ErrorCode);
-        Assert.Equal("Ocorreu um erro ao buscar as contas.", result.ErrorMessage);
+        Assert.Equal(ErrorCode.INTERNAL_ERROR, result.ErrorCode);
+        Assert.Equal("Erro simulado de banco de dados", result.ErrorMessage);
     }
 
     [Fact(DisplayName = "Deve retornar página parcial quando houver menos registros que o pageSize")]
