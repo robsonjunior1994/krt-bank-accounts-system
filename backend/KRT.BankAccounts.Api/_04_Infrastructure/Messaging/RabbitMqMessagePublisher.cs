@@ -46,6 +46,7 @@ namespace KRT.BankAccounts.Api._04_Infrastructure.Messaging
             );
 
             // fila e bind apenas em ambiente de dev/teste
+            // Só quem deve conhecer a fila é o consumidor
             if (!string.IsNullOrEmpty(_settings.Queue))
             {
                 await _channel.QueueDeclareAsync(
