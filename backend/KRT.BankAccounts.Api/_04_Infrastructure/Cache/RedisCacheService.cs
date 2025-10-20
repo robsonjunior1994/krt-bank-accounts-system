@@ -4,50 +4,49 @@ using StackExchange.Redis;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace KRT.BankAccounts.Api._04_Infrastructure.Cache
+namespace KRT.BankAccounts.Api._04_Infrastructure.Cache;
+
+[ExcludeFromCodeCoverage]
+public class RedisCacheService : ICacheService
 {
-    [ExcludeFromCodeCoverage]
-    public class RedisCacheService : ICacheService
+    private readonly IDatabase _database;
+    private readonly CacheSettings _settings;
+
+    public RedisCacheService(IConnectionMultiplexer connection, IOptions<CacheSettings> options)
     {
-        private readonly IDatabase _database;
-        private readonly CacheSettings _settings;
+        _database = connection.GetDatabase();
+        _settings = options.Value;
+    }
 
-        public RedisCacheService(IConnectionMultiplexer connection, IOptions<CacheSettings> options)
+    public async Task<T?> GetAsync<T>(string key)
+    {
+        var cachedValue = await _database.StringGetAsync(key);
+
+        if (cachedValue.IsNullOrEmpty)
+            return default;
+
+        try
         {
-            _database = connection.GetDatabase();
-            _settings = options.Value;
+            return JsonSerializer.Deserialize<T>(cachedValue!);
         }
-
-        public async Task<T?> GetAsync<T>(string key)
+        catch
         {
-            var cachedValue = await _database.StringGetAsync(key);
-
-            if (cachedValue.IsNullOrEmpty)
-                return default;
-
-            try
-            {
-                return JsonSerializer.Deserialize<T>(cachedValue!);
-            }
-            catch
-            {
-                await RemoveAsync(key);
-                return default;
-            }
+            await RemoveAsync(key);
+            return default;
         }
+    }
 
-        public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null)
-        {
-            var json = JsonSerializer.Serialize(value);
+    public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null)
+    {
+        var json = JsonSerializer.Serialize(value);
 
-            var ttl = expiration ?? TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes);
+        var ttl = expiration ?? TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes);
 
-            await _database.StringSetAsync(key, json, ttl);
-        }
+        await _database.StringSetAsync(key, json, ttl);
+    }
 
-        public async Task RemoveAsync(string key)
-        {
-            await _database.KeyDeleteAsync(key);
-        }
+    public async Task RemoveAsync(string key)
+    {
+        await _database.KeyDeleteAsync(key);
     }
 }

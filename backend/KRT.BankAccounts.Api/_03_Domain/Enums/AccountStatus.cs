@@ -1,8 +1,7 @@
-﻿namespace KRT.BankAccounts.Api._03_Domain.Enums
+﻿namespace KRT.BankAccounts.Api._03_Domain.Enums;
+
+public enum AccountStatus
 {
-    public enum AccountStatus
-    {
-        Active = 1,
-        Inactive = 2
-    }
+    Active = 1,
+    Inactive = 2
 }

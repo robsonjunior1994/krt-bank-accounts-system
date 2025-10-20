@@ -5,20 +5,19 @@ using KRT.BankAccounts.Api._04_Infrastructure.Messaging;
 using KRT.BankAccounts.Api._04_Infrastructure.Repositories;
 using System.Diagnostics.CodeAnalysis;
 
-namespace KRT.BankAccounts.Api._04_Infrastructure.DependencyInjection
+namespace KRT.BankAccounts.Api._04_Infrastructure.DependencyInjection;
+
+[ExcludeFromCodeCoverage]
+public static class InfrastructureDependencyInjection
 {
-    [ExcludeFromCodeCoverage]
-    public static class InfrastructureDependencyInjection
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
-        {
-            services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
 
-            services.AddSingleton<ICacheService, RedisCacheService>();
+        services.AddSingleton<ICacheService, RedisCacheService>();
 
-            services.AddSingleton<IMessagePublisher, RabbitMqMessagePublisher>();
+        services.AddSingleton<IMessagePublisher, RabbitMqMessagePublisher>();
 
-            return services;
-        }
+        return services;
     }
 }

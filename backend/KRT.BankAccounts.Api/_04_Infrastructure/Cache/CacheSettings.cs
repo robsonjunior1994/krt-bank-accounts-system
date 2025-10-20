@@ -1,7 +1,6 @@
-﻿namespace KRT.BankAccounts.Api._04_Infrastructure.Cache
+﻿namespace KRT.BankAccounts.Api._04_Infrastructure.Cache;
+
+public class CacheSettings
 {
-    public class CacheSettings
-    {
-        public int DefaultExpirationMinutes { get; set; } = 1440;
-    }
+    public int DefaultExpirationMinutes { get; set; } = 1440;
 }
