@@ -246,6 +246,5 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 );
             }
         }
-
     }
 }
