@@ -149,7 +149,6 @@ namespace KRT.BankAccounts.Api._02_Application.Services
                 var response = new AccountResponse(account);
 
                 await _cache.SetAsync(cacheKey, response,TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes));
-
                 return Result<AccountResponse>.Success(response);
             }
             catch (Exception)
