@@ -1,7 +1,6 @@
-﻿namespace KRT.BankAccounts.Api._02_Application.Interfaces.Infra
+﻿namespace KRT.BankAccounts.Api._02_Application.Interfaces.Infra;
+
+public interface IMessagePublisher
 {
-    public interface IMessagePublisher
-    {
-        Task PublishAsync(string eventType, object data);
-    }
+    Task PublishAsync(string eventType, object data);
 }
