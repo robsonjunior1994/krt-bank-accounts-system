@@ -11,7 +11,6 @@ using Microsoft.Extensions.Options;
 
 namespace KRT.BankAccounts.Api._02_Application.Services
 {
-
     public class AccountService : IAccountService
     {
         private readonly IAccountRepository _repository;
