@@ -226,7 +226,8 @@ Os testes foram criados com **xUnit + Moq**, cobrindo:
 Esses testes garantem **confiabilidade** e **resiliência**, validando os comportamentos de negócio independentemente da infraestrutura.
 
 ### 🚀 100% de cobertura do core da aplicação
-<img width="1546" height="832" alt="image" src="https://github.com/user-attachments/assets/024ddf25-d923-4d60-9e4a-e6845e51fe20" />
+<img width="1547" height="906" alt="image" src="https://github.com/user-attachments/assets/3e71e346-54f5-4caf-8a77-20a7187944cb" />
+
 
 ---
 
