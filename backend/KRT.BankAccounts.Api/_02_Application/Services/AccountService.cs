@@ -59,11 +59,11 @@ public class AccountService : IAccountService
             var response = new AccountResponse(account);
             return Result<AccountResponse>.Success(response);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return Result<AccountResponse>.Failure(
-                "Ocorreu um erro ao criar a conta.",
-                ErrorCode.DATABASE_ERROR
+                ex.Message,
+                ErrorCode.INTERNAL_ERROR
             );
         }
     }
@@ -92,11 +92,11 @@ public class AccountService : IAccountService
 
             return Result.Success();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return Result.Failure(
-                "Ocorreu um erro ao excluir a conta.",
-                ErrorCode.DATABASE_ERROR
+                ex.Message,
+                ErrorCode.INTERNAL_ERROR
             );
         }
     }
@@ -120,11 +120,11 @@ public class AccountService : IAccountService
 
             return Result<PagedResult<AccountResponse>>.Success(pagedResult);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return Result<PagedResult<AccountResponse>>.Failure(
-                "Ocorreu um erro ao buscar as contas.",
-                ErrorCode.DATABASE_ERROR
+                ex.Message,
+                ErrorCode.INTERNAL_ERROR
             );
         }
     }
@@ -151,11 +151,11 @@ public class AccountService : IAccountService
             await _cache.SetAsync(cacheKey, response,TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes));
             return Result<AccountResponse>.Success(response);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return Result<AccountResponse>.Failure(
-                "Ocorreu um erro ao buscar a conta.",
-                ErrorCode.DATABASE_ERROR
+                ex.Message,
+                ErrorCode.INTERNAL_ERROR
             );
         }
     }
@@ -168,17 +168,10 @@ public class AccountService : IAccountService
             if (account == null)
                 return Result<AccountResponse>.Failure("Conta não encontrada.", ErrorCode.NOT_FOUND);
 
-            try
-            {
-                if (ativar)
-                    account.Activate();
-                else
-                    account.Deactivate();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Result<AccountResponse>.Failure(ex.Message, ErrorCode.VALIDATION_ERROR);
-            }
+            if (ativar)
+                account.Activate();
+            else
+                account.Deactivate();
 
             await _repository.UpdateAsync(account);
 
@@ -198,11 +191,11 @@ public class AccountService : IAccountService
             var response = new AccountResponse(account);
             return Result<AccountResponse>.Success(response);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return Result<AccountResponse>.Failure(
-                "Ocorreu um erro ao atualizar o status da conta.",
-                ErrorCode.DATABASE_ERROR
+                ex.Message,
+                ErrorCode.INTERNAL_ERROR
             );
         }
     }
@@ -238,11 +231,11 @@ public class AccountService : IAccountService
             var response = new AccountResponse(account);
             return Result<AccountResponse>.Success(response);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return Result<AccountResponse>.Failure(
-                "Ocorreu um erro ao atualizar a conta.",
-                ErrorCode.DATABASE_ERROR
+                ex.Message,
+                ErrorCode.INTERNAL_ERROR
             );
         }
     }
