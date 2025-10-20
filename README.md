@@ -130,7 +130,8 @@ dotnet ef database update --project ../KRT.BankAccounts.Api --startup-project ..
 
 ---
 
-<img width="1246" height="897" alt="KRT Bank Accounts System Architecture" src="https://github.com/user-attachments/assets/dcbaf102-d01b-4d85-94ff-c2249a0f397e" />
+<img width="1465" height="902" alt="KRT Bank Accounts System Architecture" src="https://github.com/user-attachments/assets/0d5f282c-0dac-4c8d-aefd-fdeab930848d" />
+
 
 # 🏦 KRT Bank Accounts API — Descrição Técnica
 
