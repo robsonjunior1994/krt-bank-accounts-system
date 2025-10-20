@@ -186,7 +186,7 @@ A aplicação foi construída seguindo **DDD (Domain-Driven Design)**, **Clean A
 | **RabbitMQ 3 (Docker)**      | Mensageria para publicar eventos de criação, atualização e exclusão de contas. |
 | **xUnit + Moq**              | Testes unitários cobrindo todos os cenários críticos dos serviços.             |
 | **Swagger**                  | Documentação automática e interação com endpoints.                             |
-| **Docker Compose**           | Orquestração dos containers (SQL, Redis, RabbitMQ, API).                       |
+| **Docker Compose**           | Orquestração dos containers (SQL, Redis, RabbitMQ).                       |
 
 ---
 
