@@ -172,6 +172,7 @@ A aplicação foi construída seguindo **DDD (Domain-Driven Design)**, **Clean A
 | **Padrão Repository**            | Acesso a dados centralizado via `IAccountRepository`.                                                            |
 | **Injeção de Dependência (IoC)** | Usando `IServiceCollection` para registrar todos os serviços, repositórios, cache e mensageria.                  |
 | **DTOs de Request/Response**     | Separação total entre modelos de entrada/saída e entidades do domínio.                                           |
+| **Padrão RESTful**     | Toda a comunicação segue os princípios REST — cada recurso (ex: /api/account) tem endpoints específicos e semânticos, usando os verbos HTTP adequados (GET, POST, PUT, DELETE).                                           |
 
 ---
 
