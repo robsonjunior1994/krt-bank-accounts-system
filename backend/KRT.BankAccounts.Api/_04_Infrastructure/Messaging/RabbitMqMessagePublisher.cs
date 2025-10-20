@@ -8,17 +8,26 @@ using System.Text.Json;
 namespace KRT.BankAccounts.Api._04_Infrastructure.Messaging
 {
     [ExcludeFromCodeCoverage]
-    public class RabbitMqMessagePublisher : IMessagePublisher
+    public class RabbitMqMessagePublisher : IMessagePublisher, IAsyncDisposable
     {
         private readonly RabbitMqSettings _settings;
-        private readonly IConnection _connection;
-        private readonly IModel _channel;
+        private IConnection? _connection;
+        private IChannel? _channel;
 
         public RabbitMqMessagePublisher(IOptions<RabbitMqSettings> options)
         {
             _settings = options.Value;
+        }
 
-            var factory = new ConnectionFactory()
+        /// <summary>
+        /// Garante que a conexão e o canal sejam criados apenas uma vez, de forma assíncrona.
+        /// </summary>
+        private async Task EnsureConnectionAsync()
+        {
+            if (_connection != null && _channel != null && _channel.IsOpen)
+                return;
+
+            var factory = new ConnectionFactory
             {
                 HostName = _settings.Host,
                 Port = _settings.Port,
@@ -26,17 +35,41 @@ namespace KRT.BankAccounts.Api._04_Infrastructure.Messaging
                 Password = _settings.Password
             };
 
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
+            _connection = await factory.CreateConnectionAsync();
+            _channel = await _connection.CreateChannelAsync();
 
-            _channel.ExchangeDeclare(exchange: _settings.Exchange, type: ExchangeType.Topic, durable: true);
-            // Utilziada para teste a aplicação não deve conhecer a fila diretamente, apenas o exchange
-            //_channel.QueueDeclare(queue: _settings.Queue, durable: true, exclusive: false, autoDelete: false);
-            //_channel.QueueBind(_settings.Queue, _settings.Exchange, _settings.RoutingKey);
+            // Cria exchange
+            await _channel.ExchangeDeclareAsync(
+                exchange: _settings.Exchange,
+                type: ExchangeType.Topic,
+                durable: true
+            );
+
+            // fila e bind apenas em ambiente de dev/teste
+            // Só quem deve conhecer a fila é o consumidor
+            if (!string.IsNullOrEmpty(_settings.Queue))
+            {
+                await _channel.QueueDeclareAsync(
+                    queue: _settings.Queue,
+                    durable: true,
+                    exclusive: false,
+                    autoDelete: false
+                );
+
+                await _channel.QueueBindAsync(
+                    queue: _settings.Queue,
+                    exchange: _settings.Exchange,
+                    routingKey: _settings.RoutingKey ?? string.Empty
+                );
+            }
+
+            Console.WriteLine($"[RabbitMQ] Connected to {_settings.Host}:{_settings.Port} - Exchange: {_settings.Exchange}");
         }
 
-        public Task PublishAsync(string eventType, object data)
+        public async Task PublishAsync(string eventType, object data)
         {
+            await EnsureConnectionAsync();
+
             var message = JsonSerializer.Serialize(new
             {
                 EventType = eventType,
@@ -46,15 +79,29 @@ namespace KRT.BankAccounts.Api._04_Infrastructure.Messaging
 
             var body = Encoding.UTF8.GetBytes(message);
 
-            _channel.BasicPublish(
+            var props = new BasicProperties
+            {
+                ContentType = "application/json",
+                DeliveryMode = DeliveryModes.Persistent
+            };
+
+            await _channel!.BasicPublishAsync<BasicProperties>(
                 exchange: _settings.Exchange,
                 routingKey: eventType,
-                basicProperties: null,
+                mandatory: false,
+                basicProperties: props,
                 body: body
             );
 
-            Console.WriteLine($"Event published: {eventType}");
-            return Task.CompletedTask;
+            Console.WriteLine($"[RABBITMQ] Event published → {eventType}");
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_channel != null)
+                await _channel.DisposeAsync();
+            if (_connection != null)
+                await _connection.DisposeAsync();
         }
     }
 }
